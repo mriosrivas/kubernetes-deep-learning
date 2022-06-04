@@ -91,8 +91,6 @@ Then we convert this numpy array into a protobuf format using
 X_proto = tf.make_tensor_proto(X, shape=X.shape)
 ```
 
-
-
 # Creating Gateway
 
 ## gRPC Communication
@@ -140,8 +138,6 @@ prediction = pb_response.outputs['dense_1'].float_val
 ```
 
 All the code can be found in `flask_service_tf.py` and `flask_service.py` the only difference between these two files is that in `flask_service.py` we took out the dependecies for Tensorflow and used an auxiliary library to replace `tf.make_tensor_proto` to reduce the size of the container in later deployment.
-
-
 
 # Deploying Docker Containers
 
@@ -361,5 +357,31 @@ kubectl apply -f gateway-service.yaml
 To test your deployment you can use port forwarding in the following way
 
 ```bash
+kubectl port-forward service/gateway 8080:80
+```
+
+# Final Notes
+
+### Delete a Cluster
+
+To delete a cluster you can run
+
+```bash
+kind delete cluster
+```
+
+### Run Everything from the start
+
+```bash
+kind create cluster
+
+kind load docker-image clothing-model-tfserve:ver1
+kind load docker-image clothing-gateway:ver1
+
+kubectl apply -f model-deployment.yaml
+kubectl apply -f model-service.yaml 
+kubectl apply -f gateway-deployment.yaml
+kubectl apply -f gateway-service.yaml 
+
 kubectl port-forward service/gateway 8080:80
 ```

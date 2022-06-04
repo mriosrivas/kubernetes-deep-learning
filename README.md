@@ -1,3 +1,15 @@
+# Deploy and Serve a Tensorflow Model
+
+In this repository we will deploy a model trained in Kera and deploy it using Docker and Kubernetes.
+
+The following diagram shows the main architecture developed, later on we will dive into more detail.
+
+![Simple Architecture](Simple_Architecture.drawio.png)
+
+In this case a user sends a `URL` from an image and the `gateway` transforms the image in a serialized array. The `tf-serving` model the recieves the data using the `gRPC` protocol, performs the inference and returs the result to the `gateway`. Then the `prediction` is served by the `gateway` to the user as a JSON data.
+
+# 
+
 # Creating Model using Tensorflow Serve
 
 ## Convert model into save model
@@ -79,6 +91,8 @@ Then we convert this numpy array into a protobuf format using
 X_proto = tf.make_tensor_proto(X, shape=X.shape)
 ```
 
+
+
 # Creating Gateway
 
 ## gRPC Communication
@@ -126,6 +140,8 @@ prediction = pb_response.outputs['dense_1'].float_val
 ```
 
 All the code can be found in `flask_service_tf.py` and `flask_service.py` the only difference between these two files is that in `flask_service.py` we took out the dependecies for Tensorflow and used an auxiliary library to replace `tf.make_tensor_proto` to reduce the size of the container in later deployment.
+
+
 
 # Deploying Docker Containers
 
@@ -217,6 +233,8 @@ To turn it off run
 ```bash
 docker compose down
 ```
+
+# 
 
 # Deploy using Kubernetes
 
